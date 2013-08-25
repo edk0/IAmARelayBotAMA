@@ -1,0 +1,32 @@
+servers:
+  rozznet:
+    host: vimes.rozznet.net
+    channel_map:
+      "#survival": "mcrelay:s.nerd.nu:25565"
+      "#pve": "mcrelay:p.nerd.nu:25565"
+      "#creative": "mcrelay:c.nerd.nu:25565"
+  gamesurge:
+    host: irc.gamesurge.net
+    channel_map:
+      "#RedditMC-S": "mcrelay:s.nerd.nu:25565"
+      "#RedditMC-P": "mcrelay:p.nerd.nu:25565"
+      "#RedditMC-C": "mcrelay:c.nerd.nu:25565"
+web:
+  channel_map:
+    survival: "mcrelay:s.nerd.nu:25565"
+    pve: "mcrelay:p.nerd.nu:25565"
+    creative: "mcrelay:c.nerd.nu:25565"
+  history_size: 100
+  history_mode: count
+  host: tcp:6969
+redis_host: localhost
+redis_port: 6379
+minecraft:
+  s:
+    host: s.nerd.nu
+  p:
+    host: p.nerd.nu
+  c:
+    host: c.nerd.nu
+mc_user: redacted_user
+mc_password: "redacted_password"
