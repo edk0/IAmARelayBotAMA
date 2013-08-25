@@ -15,5 +15,5 @@
 
 This is a horrible hack I threw together in a couple of days. It's messy. If
 it doesn't work, doesn't do what you want, or is in any other way
-satisfactory... I honestly don't care. You can ping me about it on IRC if you
+unsatisfactory... I honestly don't care. You can ping me about it on IRC if you
 *really* want.

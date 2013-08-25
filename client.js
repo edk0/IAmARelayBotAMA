@@ -36,16 +36,13 @@ function translateColors(txt) {
     "e": "08",
     "f": "",
   };
-  var col = /§([0-9a-f])/g;
-  var t = txt.replace(col, function(match, p1, offset, string) {
+  return txt.replace(/§([0-9a-f])/g, function(match, p1, offset, string) {
     return "\x03" + tr[p1];
   });
-  return t;
 }
 
 function stripColors(txt) {
-  var col = /§[0-9a-f]/g;
-  return txt.replace(col, '');
+  return txt.replace(/§[0-9a-f]/g, '');
 }
 
 function relay_message(msg) {
@@ -62,20 +59,23 @@ function translate_lang(key, data) {
 
 function translate_message(msg) {
   var jsonMsg = JSON.parse(msg);
-  var text;
   if (typeof(jsonMsg.translate) === "undefined") {
-    text = jsonMsg.text;
+    return jsonMsg.text;
   } else {
-    text = translate_lang(jsonMsg.translate, jsonMsg.using);
-  }
-  if (stripColors(text).match(/\[[A-Za-z0-9_]{1,16} -> [A-Za-z0-9_]{1,16}\]/)) {
-    return false;
-  }
-  if (stripColors(text).replace(/\s+/g, '') === '') {
-    return false;
+    return translate_lang(jsonMsg.translate, jsonMsg.using);
   }
   return text;
-}  
+}
+
+function filter(msg) {
+  if (stripColors(msg).match(/\[[A-Za-z0-9_]{1,16} -> [A-Za-z0-9_]{1,16}\]/))
+    return false;
+
+  if (stripColors(msg).replace(/\s+/g, '') === '')
+    return false;
+
+  return true;
+}
  
 function connect() {
   minecraft = mc.createClient({
@@ -95,7 +95,7 @@ function connect() {
   });
   minecraft.on(0x03, function(packet) {
     var msg = translate_message(packet.message);
-    if (msg !== false && msg != "") {
+    if (filter(msg) !== false && msg != "") {
       relay_message(msg);
     }
   });
