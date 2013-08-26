@@ -11,9 +11,6 @@ from twisted.internet import defer, protocol, reactor, task
 from twisted.internet.interfaces import ISSLTransport
 from twisted.python.util import InsensitiveDict
 
-from mk2.plugins import Plugin
-from mk2.events import PlayerChat, PlayerJoin, PlayerQuit, PlayerDeath, ServerOutput, ServerStopping, ServerStarting, StatPlayers, Hook
-
 try:
     from OpenSSL import SSL
     from twisted.internet import ssl
