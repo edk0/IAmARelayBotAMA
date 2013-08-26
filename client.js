@@ -23,30 +23,6 @@ var user = cfg["mc_user"], password = cfg["mc_password"];
 var minecraft;
 var client = redis.createClient();
 
-function translateColors(txt) {
-  var tr = {
-    "0": "01",
-    "1": "02",
-    "2": "03",
-    "3": "10",
-    "4": "04",
-    "5": "06",
-    "6": "08",
-    "7": "15",
-    "8": "14",
-    "9": "12",
-    "a": "09",
-    "b": "11",
-    "c": "04",
-    "d": "13",
-    "e": "08",
-    "f": "",
-  };
-  return txt.replace(/§([0-9a-f])/g, function(match, p1, offset, string) {
-    return "\x03" + tr[p1];
-  });
-}
-
 function stripColors(txt) {
   return txt.replace(/§[0-9a-f]/g, '');
 }
