@@ -6,10 +6,37 @@
 
 ## things
 
-- `client.js` - Minecraft client. invoke as `node client.js <server>`
-- `ircbot.py` - Redis client -> IRC bot
-- `websocket-server.py` - Redis client -> IRC server
-- `tx_redis.py` - Redis protocol implementation for Twisted
+- `chat.html` - Web client, originally by @hansihe.
+
+- `client.js` - Minecraft client. invoke as `node client.js <server>`.
+  In need of serious refactoring.
+- `ircbot.py` - Redis client -> IRC bot. Mostly stolen from
+  [mark2](https://github.com/mcdevs/mark2/blob/master/mk2/plugins/irc.py).
+- `websocket-server.py` - Redis client -> WebSocket server.
+- `tx_redis.py` - Redis protocol implementation for Twisted. Cobbled together
+  from stuff I wrote for a never-finished project called mark2-web.
+
+
+## dependencies
+
+### python
+
+```
+twisted
+hiredis
+pyyaml
+txws
+```
+
+### node.js
+
+```
+minecraft-protocol
+redis
+js-yaml
+properties
+```
+
 
 ## disclaimer
 
