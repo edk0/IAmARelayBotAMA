@@ -6,19 +6,47 @@
     <title>Chat Relay</title>
     <style type="text/css">
       @import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:500);
+      @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
 
       body {
         background-color: #222222;
+        margin: 0;
       }
 
       #chat {
         font-family: "Source Code Pro", "Courier New", Courier, monospace;
         font-weight: 500;
+        margin-top: 25px;
+        padding: 0px 4px 4px 4px;
       }
 
       #chat p {
         margin-bottom: 0.1em;
         margin-top: 0.1em;
+      }
+
+      #top {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 24px;
+        margin: 0;
+        background-color: #222222;
+        border-bottom: 1px solid #ffffff;
+        color: #ffffff;
+        font-family: "Source Sans Pro", Tahoma, sans-serif;
+        cursor: default;
+      }
+
+      #top a {
+        padding: 2px;
+        color: #e0e0e0;
+        text-decoration: none;
+      }
+
+      #top a:hover {
+        color: #ffffff;
       }
 
       .chat-black {color: #000000}
@@ -49,8 +77,14 @@
     <script type="text/javascript" src="underscore-min.js"></script>
   </head>
   <body>
+    <div id="top">
+      <a href="creative">creative</a>
+      &nbsp;
+      <a href="pve">pve</a>
+      &nbsp;
+      <a href="survival">survival</a>
+    </div>
     <div id="chat">
-
     </div>
     <script type="text/javascript">
 
@@ -71,7 +105,7 @@
         'd': "chat-lightpurple",
         'e': "chat-yellow",
         'f': "chat-white"
-      }
+      };
 
       var styles = {
         'k': "chat-random",
@@ -79,7 +113,7 @@
         'm': "chat-strike",
         'n': "chat-underline",
         'o': "chat-italic"
-      }
+      };
 
       function parse_colors(text) {
         var result = "<span class=chat-white>";
@@ -89,9 +123,12 @@
 
         while (text.indexOf("§") != -1) { // Loop until we are out of color characters
           var position = text.indexOf("§");
-          result = result + _.escape(text.substring(0, position)); // Append the part of the string before the character
+
+          result += _.escape(text.substring(0, position)); // Append the part of the string before the character
+
           var character = text[position+1];
           text = text.substring(position+2); // Strip the processed part off
+
           if (character in colors) {
             color = colors[character];
             style = {};
@@ -103,38 +140,31 @@
           } else {
             continue;
           }
+
           var cls = color;
           for (var k in style) {
             if (style[k]) {
               cls += " " + k;
             }
           }
+
           result += "</span><span class=\"" + cls + "\">";
         }
 
-        result = result + _.escape(text);
-
-        //if(!first) { // If at least one color code was processed, close the tag
-          result = result + "</span>";
-        //}
+        result += _.escape(text) + "</span>";
 
         return result;
       }
 
       function is_scrolled_to_bottom() {
-        console.log(window.innerHeight+window.scrollY);
-        console.log(document.body.offsetHeight)
         return (window.innerHeight + window.scrollY) >= document.body.offsetHeight;
       }
  
       var chat_container = document.getElementById("chat");
       function append(text) {
-        var bottom = false;
-        if(is_scrolled_to_bottom()) {
-          bottom = true;
-        }
+        var bottom = is_scrolled_to_bottom();
         chat_container.innerHTML = chat_container.innerHTML + text;
-        if(bottom) {
+        if (bottom) {
           window.scrollTo(0, document.body.scrollHeight);
         }
       }
@@ -149,24 +179,29 @@
       new_uri += "//" + loc.host;
       new_uri += loc.pathname + "/socket";
 
-      var connection = new WebSocket(new_uri);
+      function connect() {
+        var connection = new WebSocket(new_uri);
 
-      connection.onopen = function() {
-        append("<p><span class=\"chat-red\">WebSocket: connection established</span></p>")
+        connection.onopen = function() {
+          append("<p><span class=\"chat-red\">WebSocket: connection established</span></p>");
+        }
+
+        connection.onclose = function() {
+          append("<p><span class=\"chat-red\">WebSocket: error: connection closed, retrying</span></p>");
+          setTimeout(connect, 5000);
+        }
+
+        connection.onerror = function(error) {
+          append("<p><span class=\"chat-red\">WebSocket: error: " + error.data + "</span></p>");
+        }
+
+        connection.onmessage = function(message) {
+          text = message.data;
+          append("<p>" + parse_colors(text) + "</p>");
+        }
       }
 
-      connection.onclose = function() {
-        append("<p><span class=\"chat-red\">WebSocket: error: connection closed, retrying</span></p>")
-      }
-
-      connection.onerror = function(error) {
-        append("<p><span class=\"chat-red\">WebSocket: error: " + error.data + "</span></p>")
-      }
-
-      connection.onmessage = function(message) {
-        text = message.data;
-        append("<p>" + parse_colors(text) + "</p>")
-      }
+      connect();
 
     </script>
   </body>
