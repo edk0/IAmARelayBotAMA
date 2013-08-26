@@ -12,6 +12,12 @@ var servercfg = cfg["minecraft"][process.argv[2]];
 
 var host = servercfg["host"], port = servercfg["port"] || 25565;
 
+var channel = host + ":" + port;
+
+if (typeof servercfg["name"] !== "undefined") {
+  channel = servercfg["name"];
+}
+
 var user = cfg["mc_user"], password = cfg["mc_password"];
 
 var minecraft;
@@ -47,7 +53,7 @@ function stripColors(txt) {
 
 function relay_message(msg) {
   if (!msg) return;
-  client.publish("mcrelay:" + host + ":" +  port, msg);
+  client.publish("mcrelay:" + channel, msg);
 }
 
 function translate_lang(key, data) {
