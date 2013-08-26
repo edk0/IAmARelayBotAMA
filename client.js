@@ -58,29 +58,61 @@ function filter(msg) {
 
   return true;
 }
- 
+
+function send_chat(msg) {
+  console.info(">>> " + msg);
+  minecraft.write(0x03, {message: msg});
+}
+
 function connect() {
+  var id;
   minecraft = mc.createClient({
     username: user,
     password: password,
     host: host,
     port: port,
   });
+  minecraft.need_autorun = true;
+  minecraft.need_updates = true;
   minecraft.on('connect', function() {
     console.info('connected');
   });
   minecraft.on('end', function(reason) {
+    clearInterval(id);
     setTimeout(connect, 5000);
   });
   minecraft.on('error', function(err) {
     console.info(err);
   });
   minecraft.on(0x03, function(packet) {
+    if (this.need_autorun) {
+      this.need_autorun = false;
+      if (typeof servercfg["autorun"] !== "undefined") {
+        var i; sp = servercfg["autorun"].split("\n");
+        for (i = 0; i < sp.length; i++) {
+          if (sp[i] != "") send_chat(sp[i]);
+        }
+      }
+    }
     var msg = translate_message(packet.message);
+    console.log("<<< " + msg);
     if (filter(msg) !== false && msg != "") {
       relay_message(msg);
     }
   });
+  minecraft.on(0x0d, function(packet) {
+    console.log(packet);
+    this.position = packet;
+    this.write(0x0d, packet);
+    if (this.need_updates) {
+      this.need_updates = false;
+      id = setInterval(update, 50, this);
+    }
+  });
+  function update(mc) {
+    mc.position.yaw = (mc.position.yaw + 15.0) % 360;
+    mc.write(0x0d, mc.position);
+  }
 }
 
 connect();
