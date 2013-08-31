@@ -131,7 +131,6 @@ class Manager:
         return ''.join(random.choice(ALPHABET) for i in xrange(l))
 
     def new_client(self, client):
-        print "new client: {}".format(client.get_channel())
         for msg in self.history.get(self.channel_map[client.get_channel()], []):
             client.send(msg)
 
