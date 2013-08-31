@@ -110,7 +110,7 @@ function connect() {
     }
   });
   function update(mc) {
-    mc.position.yaw = (mc.position.yaw + 15.0) % 360;
+    //mc.position.yaw = (mc.position.yaw + 15.0) % 360;
     mc.write(0x0d, mc.position);
   }
 }
