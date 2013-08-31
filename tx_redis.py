@@ -72,20 +72,6 @@ class PythonRedisProtocol(_RedisProtocol):
         self.parent = factory
         self.decode_node = Node(length=1)
 
-    def request(self, *args):
-        self.transport.write(self.encode_request(args))
-
-    def encode_request(self, args):
-        lines = []
-        lines.append('*' + str(len(args)))
-        for a in args:
-            if isinstance(a, unicode):
-                a = a.encode('utf8')
-            lines.append('$' + str(len(a)))
-            lines.append(a)
-        lines.append('')
-        return '\r\n'.join(lines)
-
     def reset(self):
         self.decode_node = Node(length=1)
 
