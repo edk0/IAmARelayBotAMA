@@ -6,7 +6,7 @@
 
 ## things
 
-- `chat.html` - Web client, originally by @hansihe.
+- `chat.html` - Web client, originally by hansihe.
 
 - `client.js` - Minecraft client. invoke as `node client.js <server>`.
   In need of serious refactoring.
