@@ -543,11 +543,12 @@ class Manager(object):
             for k, v in cfg.items():
                 setattr(irc, k, v)
             for k, v in irc.channel_map.items():
+                irc.channel_map[k] = v = "mcrelay:" + v
                 channels.add(v)
                 self.channel_map.setdefault(v, set()).add(irc)
             irc.start()
 
-        self.redis_factory = RedisFactory(self, list(channels))
+        self.redis_factory = RedisFactory(self, channels)
         reactor.connectTCP(self.config['redis_host'], self.config['redis_port'], self.redis_factory)
 
         reactor.addSystemEventTrigger("before", "shutdown", self.on_shutdown)
