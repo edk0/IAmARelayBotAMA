@@ -64,6 +64,17 @@ function send_chat(msg) {
   minecraft.write(0x03, {message: msg});
 }
 
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+
+process.stdin.on('data', function(text) {
+  try {
+    send_chat(text);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 function connect() {
   var id;
   minecraft = mc.createClient({
