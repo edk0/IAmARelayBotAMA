@@ -115,6 +115,8 @@ class IRCBot(irc.IRCClient):
     sasl_result = None
     sasl_login = None
 
+    cancel_hilight_re = re.compile(ur"(?:(?<=\u00a7[0-9a-flmnor])|(?<!\u00a7)\b).+?\b")
+
     def __init__(self, factory, parent):
         self.factory     = factory
         self.nickname    = parent.nickname.encode('ascii')
@@ -437,7 +439,7 @@ class IRCBot(irc.IRCClient):
                 return s[:-1] + '*' + s[-1]
             else:
                 return s
-        return re.sub(r"\b.+?\b", hl, text)
+        return self.cancel_hilight_re.sub(hl, text)
 
     def translate_colors(self, text):
         tr = {
